@@ -64,8 +64,13 @@ export function Hero() {
             </motion.div>
 
             <h1 className="mt-7 font-display text-display-lg font-light leading-[0.95] text-cream">
-              <TextReveal text="Crafted for Those" delay={0.35} className="block" />
-              <TextReveal text="Who Value Time." delay={0.6} className="block italic text-gold-pale" />
+              <TextReveal text="Crafted for Those" delay={0.35} className="block" onMount />
+              <TextReveal
+                text="Who Value Time."
+                delay={0.6}
+                className="block italic text-gold-pale"
+                onMount
+              />
             </h1>
 
             <motion.p

@@ -164,7 +164,13 @@ export function ParallaxZoom({
   );
 }
 
-/** Word-by-word mask reveal for headlines. Keeps an accessible label. */
+/** Word-by-word mask reveal for headlines. Keeps an accessible label.
+ *  Set `onMount` for above-the-fold headlines (e.g. the hero): they animate on
+ *  mount instead of on scroll-into-view. `whileInView` relies on an
+ *  IntersectionObserver that can fail to fire for already-visible content
+ *  (notably React Strict Mode's dev double-mount with `once`), which would
+ *  leave the words parked at y:115% — clipped by the overflow-hidden mask and
+ *  invisible. */
 export function TextReveal({
   text,
   className,
@@ -172,6 +178,7 @@ export function TextReveal({
   delay = 0,
   stagger = 0.055,
   once = true,
+  onMount = false,
 }: {
   text: string;
   className?: string;
@@ -179,6 +186,7 @@ export function TextReveal({
   delay?: number;
   stagger?: number;
   once?: boolean;
+  onMount?: boolean;
 }) {
   const reduce = useReducedMotion();
   const words = text.split(" ");
@@ -190,8 +198,7 @@ export function TextReveal({
         <motion.span
           className="inline-block"
           initial={reduce ? { y: 0 } : { y: "115%" }}
-          whileInView={{ y: 0 }}
-          viewport={{ once }}
+          {...(onMount ? { animate: { y: 0 } } : { whileInView: { y: 0 }, viewport: { once } })}
           transition={
             reduce ? { duration: 0 } : { duration: 0.95, ease: EASE, delay: delay + i * stagger }
           }
